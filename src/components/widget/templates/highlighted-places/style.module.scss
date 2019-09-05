@@ -29,9 +29,14 @@
     color: $white;
     text-align: center;
     line-height: 20px;
+
     .cardInfo {
       display: inline;
       min-width: 120px;
+
+      &.worldwide {
+        margin-bottom: 30px;
+      }
 
       h3 {
         margin: 0;

@@ -44,7 +44,7 @@ const HighlightedPlaces = ({ data, currentLocation }) => (
           }}
           className={styles.card}
         >
-          <span className={styles.cardInfo}>
+          <span className={classnames(styles.cardInfo, styles.worldwide)}>
             <h3 className="notranslate">Worlwide</h3>
           </span>
           {/* <span className={styles.cardInfo}>Back to Worldwide</span> */}
