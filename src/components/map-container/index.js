@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { setViewport, setPopup, removePopup } from 'modules/map/actions';
+import { activeLayersForLegend as activeLayers } from 'modules/layers/selectors';
 import { mapStyle } from 'modules/map-styles/selectors';
 import { pageActions } from 'modules/pages/actions';
 
@@ -8,6 +9,7 @@ import Component from './component';
 const mapStateToProps = state => ({
   ...state.map,
   mapStyle: mapStyle(state),
+  activeLayers: activeLayers(state),
   mapboxApiAccessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,
   isCollapse: state.layers.isCollapsed
 });

@@ -263,8 +263,8 @@ class Map extends Component {
         <ReactMapGL
           ref={(map) => { this.map = map && map.getMap(); }}
 
+          mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
           // CUSTOM PROPS FROM REACT MAPBOX API
-          mapStyle={ms}
           {...mapboxProps}
 
           // VIEWPORT

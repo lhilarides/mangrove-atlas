@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import MediaQuery from 'react-responsive';
 import { breakpoints } from 'utils/responsive';
+import { LayerManager, Layer } from 'layer-manager/dist/components';
+import { PluginMapboxGl } from 'layer-manager';
 import { NavigationControl, FullscreenControl } from 'react-map-gl';
 import classnames from 'classnames';
 import pick from 'lodash/pick';
@@ -17,6 +19,8 @@ import { WDPA } from 'modules/locations/constants';
 
 import styles from './style.module.scss';
 
+import LAYERS from './constants';
+
 export const MapContainer = ({
   viewport,
   setViewport,
@@ -27,7 +31,8 @@ export const MapContainer = ({
   mapStyle,
   bounds,
   goToCountry,
-  goToAOI
+  goToAOI,
+  activeLayers
 }) => {
   const onViewportChange = (newViewport) => {
     setViewport(pick(newViewport, ['latitude', 'longitude', 'zoom', 'bearing', 'pitch']));
@@ -41,13 +46,14 @@ export const MapContainer = ({
     });
   };
 
+
   useEffect(() => {
     window.addEventListener('resize', resize);
     resize();
     return function cleanup() {
       window.removeEventListener('resize', resize);
     };
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   const { parsedResult: browser } = (Bowser.getParser(window.navigator.userAgent));
@@ -120,17 +126,30 @@ export const MapContainer = ({
         interactiveLayerIds={interactiveLayerIds}
         onPopupClose={popupCloseHandler}
       >
-        {() => (
-          <div className={styles.navigation}>
-            {browser.name !== 'Safari' && (
-              <MediaQuery minWidth={breakpoints.lg + 1}>
-                <FullscreenControl className={styles.fullscreen} />
+        {map => (
+          <Fragment>
+            <LayerManager
+              map={map}
+              plugin={PluginMapboxGl}
+            >
+              {LAYERS.map(l => (
+                <Layer key={l.id} {...l} />
+              ))}
+            </LayerManager>
+
+            <div className={styles.navigation}>
+              {browser.name !== 'Safari' && (
+                <MediaQuery minWidth={breakpoints.lg + 1}>
+                  <FullscreenControl className={styles.fullscreen} />
+                </MediaQuery>
+              )}
+              <MediaQuery minWidth={breakpoints.sm}>
+                <NavigationControl className={styles.zoomControls} />
               </MediaQuery>
-            )}
-            <MediaQuery minWidth={breakpoints.sm}>
-              <NavigationControl className={styles.zoomControls} />
-            </MediaQuery>
-          </div>
+            </div>
+
+          </Fragment>
+
         )
         }
       </MangroveMap>
