@@ -130,7 +130,28 @@ const LAYERS = [
         }
       ]
     }
-  }
+  },
+  {
+    id: 'basal_area',
+    type: 'raster',
+    source: {
+      type: 'raster',
+      tiles: ['https://mangrove_atlas.storage.googleapis.com/tilesets/mangrove_basal-area_weighted_height_2000_v1-2_z0-13/{z}/{x}/{y}.png'],
+      minzoom: 0,
+      maxzoom: 13
+    },
+    render: {
+      layers: [
+        {
+          minzoom: 3, // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#minzoom
+          maxzzom: 12, // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#maxzoom
+          paint: {
+            'raster-saturation': -1
+          }
+        }
+      ]
+    }
+  },
 ];
 
 export default LAYERS;
