@@ -44,11 +44,11 @@ export const layerStyles = createSelector(
     const extendedLayers = [...layersStyles, ...rasterLayers];
     return extendedLayers.filter(
       style => _activeLayersIds.includes(style.id)
-      || (
-        style.metadata
-        && style.metadata.mangroveGroup
-        && _activeLayersIds.includes(style.metadata.mangroveGroup)
-      )
+        || (
+          style.metadata
+          && style.metadata.mangroveGroup
+          && _activeLayersIds.includes(style.metadata.mangroveGroup)
+        )
     );
   }
 );
@@ -99,7 +99,6 @@ export const mapStyle = createSelector(
     const visibleBHLayers = _activeLayersIds.reduce((acc, layerId) => {
       const layerMap = layersMap[layerId];
       const layerFilter = _filters.find(f => f.id === layerId);
-
       if (layerFilter && layerMap) {
         return [
           ...acc,
@@ -109,10 +108,8 @@ export const mapStyle = createSelector(
             ).map(layerMapItem => layerMapItem.layerId)
         ];
       }
-
       return acc;
     }, []);
-
     const bhLayersUpdated = bhLayers.map(layer => ({
       ...layer,
       layout: {

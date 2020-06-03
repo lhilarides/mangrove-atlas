@@ -94,6 +94,8 @@ class Chart extends PureComponent {
       ...content
     } = config;
 
+    console.log(config, '*********')
+
     const {
       xKey,
       yKeys,

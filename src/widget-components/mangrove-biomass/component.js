@@ -75,7 +75,7 @@ const MangroveBiomass = ({
     data: chartData,
     config: chartConfig
   };
-
+console.log(chartData, chartConfig, 'chartData, chartConfig')
   return (
     <ChartWidget
       name={name}

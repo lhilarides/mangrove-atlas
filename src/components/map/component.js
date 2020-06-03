@@ -275,7 +275,7 @@ class Map extends Component {
           // INTERACTIVE
           dragPan={!flying && dragPan}
           dragRotate={!flying && dragRotate}
-          scrollZoom={!flying && scrollZoom}
+          scrollZoom={false}
           touchZoom={!flying && touchZoom}
           touchRotate={!flying && touchRotate}
           doubleClickZoom={!flying && doubleClickZoom}
