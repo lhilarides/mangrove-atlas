@@ -45,6 +45,7 @@ import ShareControl from '@/components/map/controls/share';
 import ZoomControl from '@/components/map/controls/zoom';
 import DrawControl from '@/components/map/drawing-tool';
 import { CustomMapProps } from '@/components/map/types';
+import CoordinatesPopup from '@/components/ui/popup';
 import { Media } from '@/components/media-query';
 import { breakpoints } from '@/styles/styles.config';
 import type { LocationPopUp, PopUpKey, RestorationPopUp, RestorationSitesPopUp } from 'types/map';
@@ -119,6 +120,23 @@ const MapContainer = ({ mapId }: { mapId: string }) => {
   }>({
     info: null,
   });
+
+  const [rightClickInfo, setRightClickInfo] = useState<{
+    latitude: number;
+    longitude: number;
+    x: number;
+    y: number;
+  } | null>(null);
+
+  const handleContextMenu = useCallback((event) => {
+    event.originalEvent.preventDefault();
+    setRightClickInfo({
+      latitude: event.lngLat.lat,
+      longitude: event.lngLat.lng,
+      x: event.point.x,
+      y: event.point.y,
+    });
+  }, []);
 
   const handleClickOutside = () => {
     removePopup();
@@ -266,6 +284,10 @@ const MapContainer = ({ mapId }: { mapId: string }) => {
 
       if (removeAll || key?.includes('mangrove_rest_sites')) {
         setRestorationSitesPopUp({ info: null });
+      }
+
+      if (removeAll) {
+        setRightClickInfo(null);
       }
     },
     [setRestorationPopUpInfo, setIucnEcoregionPopUp, setLocationPopUp, setRestorationSitesPopUp]
@@ -533,6 +555,7 @@ const MapContainer = ({ mapId }: { mapId: string }) => {
               : interactiveLayerIds.filter((id): id is string => !!id)
           }
           onClick={onClickHandler}
+          onContextMenu={handleContextMenu}
           onMouseMove={handleMouseMove}
           onLoad={handleMapLoad}
           cursor={cursor}
@@ -604,6 +627,38 @@ const MapContainer = ({ mapId }: { mapId: string }) => {
                   </Helper>
                 </div>
               </Controls>
+              {rightClickInfo && (
+                <CoordinatesPopup
+                  longitude={rightClickInfo.longitude}
+                  latitude={rightClickInfo.latitude}
+                  popUpPosition={{ x: rightClickInfo.x, y: rightClickInfo.y }}
+                  popUpWidth={300}
+                  onClose={() => setRightClickInfo(null)}
+                >
+                  <div className="flex flex-col gap-2 p-2">
+                    <div className="text-sm">
+                      <p className="font-sans text-xs">
+                        <span className="font-bold">Lat:</span> {rightClickInfo.latitude.toFixed(5)}
+                      </p>
+                      <p className="font-sans text-xs">
+                        <span className="font-bold">Lng:</span>{' '}
+                        {rightClickInfo.longitude.toFixed(5)}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="bg-brand-800 hover:bg-brand-600 w-full rounded px-2 py-1 text-xs text-white transition-colors"
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `${rightClickInfo.latitude}, ${rightClickInfo.longitude}`
+                        );
+                      }}
+                    >
+                      Copy Coordinates
+                    </button>
+                  </div>
+                </CoordinatesPopup>
+              )}
 
               {!!position && !!locationPopUp.info && (
                 <Marker
