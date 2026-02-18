@@ -178,9 +178,9 @@ const MapContainer = ({ mapId }: { mapId: string }) => {
       ...(URLBounds ? { bounds: URLBounds as LngLatBoundsLike } : {}),
       ...(!URLBounds && locationId
         ? {
-            bounds:
-              queryClient.getQueryData<typeof locationBounds>(['location-bounds']) || undefined,
-          }
+          bounds:
+            queryClient.getQueryData<typeof locationBounds>(['location-bounds']) || undefined,
+        }
         : {}),
     }),
     [URLBounds, locationId, queryClient]
@@ -418,17 +418,17 @@ const MapContainer = ({ mapId }: { mapId: string }) => {
       const infoParsed = restorationSitesFeature?.properties?.cluster
         ? { point_count: restorationSitesFeature?.properties.point_count }
         : Object.entries(LABELS).reduce((acc, [key, label]) => {
-            const value = restorationSitesFeature.properties?.[key];
+          const value = restorationSitesFeature.properties?.[key];
 
-            if (key === 'landscape_name' || key === 'site_name') {
-              acc[label] = [value];
-            } else {
-              const parsed = value ? JSON.parse(value) : null;
-              acc[label] = Array.isArray(parsed) ? parsed : parsed ? [parsed] : [];
-            }
+          if (key === 'landscape_name' || key === 'site_name') {
+            acc[label] = [value];
+          } else {
+            const parsed = value ? JSON.parse(value) : null;
+            acc[label] = Array.isArray(parsed) ? parsed : parsed ? [parsed] : [];
+          }
 
-            return acc;
-          }, {});
+          return acc;
+        }, {});
 
       setRestorationSitesPopUp({
         ...restorationSitesPopUp,
@@ -635,7 +635,7 @@ const MapContainer = ({ mapId }: { mapId: string }) => {
                   popUpWidth={300}
                   onClose={() => setRightClickInfo(null)}
                 >
-                  <div className="flex flex-col gap-2 p-2">
+                  <div className="flex flex-col gap-2 p-4 pt-6">
                     <div className="text-sm">
                       <p className="font-sans text-xs">
                         <span className="font-bold">Lat:</span> {rightClickInfo.latitude.toFixed(5)}
