@@ -32,7 +32,7 @@ import { breakpoints } from '@/styles/styles.config';
 import { BUTTON_STYLES } from 'styles/widgets';
 import { WidgetTypes } from 'types/widget';
 
-import SETTINGS_SVG from '@/svgs/ui/settings.svg?sprite';
+import SETTINGS_SVG from '@/svgs/ui/settings.svg';
 
 import { useWidgets } from './hooks';
 import WidgetsCardsControls from './widgets-cards-controls';
@@ -111,10 +111,16 @@ const WidgetsContainer: FC = () => {
 
       {screenWidth > 0 && screenWidth < breakpoints.md && !!widgets.length && (
         <div className="pb-16 md:pb-0">
-          {widgetsAvailable.map(({ slug, name, ...props }) => {
+          {widgetsAvailable.map(({ slug, name, index, ...props }) => {
             const Widget = WIDGETS[slug] satisfies () => JSX.Element;
             return (
-              <WidgetWrapper key={slug} title={name} id={slug} applicability={props?.applicability}>
+              <WidgetWrapper
+                key={slug}
+                title={name}
+                id={slug}
+                applicability={props?.applicability}
+                index={index}
+              >
                 {WIDGETS[slug] && <Widget />}
               </WidgetWrapper>
             );
@@ -176,7 +182,7 @@ const WidgetsContainer: FC = () => {
             </motion.div>
           </DialogTrigger>
         </Helper>
-        <DialogContent className="mb-10 w-screen border-2 md:w-auto">
+        <DialogContent className="mb-10 w-screen max-w-135 border-2 bg-red-900 md:w-auto">
           <DialogClose className="top-8 md:fixed md:top-18! md:left-[595px]" />
           <div className="no-scrollbar space-y-8">
             <DialogTitle className="font-black/85 text-3xl leading-10 font-light">
