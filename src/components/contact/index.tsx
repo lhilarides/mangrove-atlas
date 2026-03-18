@@ -1,16 +1,14 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 
+import { trackEvent } from '@/lib/analytics/ga';
 import cn from '@/lib/classnames';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import { z } from 'zod';
-
-import { TOPICS } from './constants';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox, CheckboxIndicator } from '@/components/ui/checkbox';
@@ -31,7 +29,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { trackEvent } from '@/lib/analytics/ga';
+
+import { TOPICS } from './constants';
 
 const TOPICS_VALUES = TOPICS.map((topic) => topic.value) as [string, ...string[]];
 const isDev = process.env.NODE_ENV === 'development';
@@ -54,7 +53,7 @@ export const ContactFormSchema = z.object({
 
 type FormSchema = z.infer<typeof ContactFormSchema>;
 
-export function ContactForm() {
+function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [isOpen, setIsOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);

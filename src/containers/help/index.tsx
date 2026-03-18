@@ -1,25 +1,22 @@
 import { useState } from 'react';
 
 import { activeGuideAtom } from '@/store/guide';
-import { useRecoilState } from 'recoil';
 
+import { useRecoilState } from 'recoil';
 import { useLocalStorage } from 'usehooks-ts';
 
 import Contact from '@/containers/contact';
 
-import { TbWheel } from 'react-icons/tb';
-import { LuChevronDown } from 'react-icons/lu';
-
-const TbWheelIcon = TbWheel as unknown as (p: IconBaseProps) => JSX.Element;
-const LuChevronDownIcon = LuChevronDown as unknown as (p: IconBaseProps) => JSX.Element;
+import CHEVRON_ICON from '@/svgs/ui/chevron';
+import HELP_ICON from '@/svgs/tools-bar/help';
 
 import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover';
 import { SwitchRoot, SwitchThumb, SwitchWrapper } from 'components/ui/switch';
 
 import GuideModalIntro from './modal-intro';
+
 import { trackEvent } from '@/lib/analytics/ga';
 import cn from '@/lib/classnames';
-import { IconBaseProps } from 'react-icons/lib/iconBase';
 
 type HelpContainerProps = {
   theme?: 'light' | 'dark';
@@ -59,11 +56,12 @@ export const HelpContainer = ({
     <div>
       <Popover>
         <PopoverTrigger
+          data-testid="guide-button"
           className={cn('flex cursor-pointer items-center space-x-2', THEME[theme], className)}
         >
-          <TbWheelIcon className="h-5 w-5" />
+          <HELP_ICON className="h-6 w-6" />
           <p className="font-sans text-sm">Help</p>
-          {hasArrow && <LuChevronDownIcon className="h-4 w-4" />}
+          {hasArrow && <CHEVRON_ICON role="img" className="h-4 w-4" />}
         </PopoverTrigger>
 
         <PopoverContent className="shadow-border rounded-2xl p-6 text-sm font-semibold">
@@ -73,6 +71,7 @@ export const HelpContainer = ({
 
             <SwitchWrapper id="guide-intro" className="h-2 w-4">
               <SwitchRoot
+                data-testid="guide-switch"
                 onClick={handleClick}
                 defaultChecked={isActive}
                 checked={isActive}

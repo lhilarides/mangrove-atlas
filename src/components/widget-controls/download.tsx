@@ -1,4 +1,7 @@
+import { trackEvent } from '@/lib/analytics/ga';
+
 import { DOWNLOAD } from '@/containers/datasets';
+import Helper from '@/containers/help/helper';
 
 import {
   Dialog,
@@ -7,13 +10,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import Icon from '@/components/ui/icon';
+import DOWNLOAD_SVG from '@/svgs/ui/download';
 
-import DOWNLOAD_SVG from '@/svgs/ui/download.svg?sprite';
-
-import Helper from '@/containers/help/helper';
 import { HELPER_POSITION } from './constants';
-import { trackEvent } from '@/lib/analytics/ga';
 
 /**
  * Download component
@@ -66,8 +65,8 @@ const Download = ({ id, content }) => {
         tooltipPosition={{ top: -35, left: 0 }}
         message="Use this function to download spatial data associated with this widget and map layer. Links may point to external sources. Not all data layers are available for download. "
       >
-        <DialogTrigger className="flex h-full items-center">
-          <Icon icon={DOWNLOAD_SVG} className="text-brand-800 h-7.5 w-7.5" description="Download" />
+        <DialogTrigger className="border-brand-800/20 flex h-7.5 w-7.5 items-center rounded-full border-2 text-transparent">
+          <DOWNLOAD_SVG className="fill-current" role="img" title="Download" />
         </DialogTrigger>
       </Helper>
       <DialogContent>

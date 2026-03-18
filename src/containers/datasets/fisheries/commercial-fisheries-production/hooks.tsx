@@ -3,11 +3,11 @@ import type { LayerProps, RasterSource } from 'react-map-gl';
 import { useRouter } from 'next/router';
 
 import { useQuery, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
-import { Visibility } from '@/types/layers';
 
 import { useLocation } from '@/containers/datasets/locations/hooks';
 import type { LocationTypes } from '@/containers/datasets/locations/types';
 
+import { Visibility } from '@/types/layers';
 import type { UseParamsOptions } from 'types/widget';
 
 import API from 'services/api';
@@ -59,7 +59,7 @@ export function useMangroveCommercialFisheriesProduction<TData = DataResponse>(
   return useQuery<DataResponse, Error, TData>(
     ['fishery-mitigation-potentials', params, location_id],
     fetchMangroveFisheryMitigationPotentials,
-    { ...(queryOptions || {}) }
+    { keepPreviousData: true, ...(queryOptions || {}) }
   );
 }
 

@@ -13,7 +13,7 @@ on:
 jobs:
   run:
     name: Deploy fetch alerts cloud function
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -25,11 +25,14 @@ jobs:
         with:
           credentials_json: '${{ secrets.gcp_credentials }}'
       - id: 'deploy'
-        uses: 'google-github-actions/deploy-cloud-functions@v3'
+        uses: 'google-github-actions/deploy-cloud-functions@v2'
         timeout-minutes: 10
         with:
           name: 'alerts-tiler'
-          runtime: 'nodejs20'
+          runtime: 'nodejs22'
+          entry_point: 'fetchAlertsTiler'
+          region: 'us-central1'
+          source_dir: 'cloud-functions/alerts-tiler'
 
       # Example of using the output
       - id: 'test'

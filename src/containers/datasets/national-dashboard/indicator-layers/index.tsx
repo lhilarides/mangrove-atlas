@@ -1,24 +1,23 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useRecoilState } from 'recoil';
+
+import { trackEvent } from '@/lib/analytics/ga';
 
 import { activeLayersAtom } from '@/store/layers';
-import { updateLayers } from 'hooks/layers';
-import type { ActiveLayers } from 'types/layers';
+
+import { useRecoilState } from 'recoil';
 
 import { SwitchRoot, SwitchThumb, SwitchWrapper } from '@/components/ui/switch';
 import WidgetControls from '@/components/widget-controls';
-import { trackEvent } from '@/lib/analytics/ga';
+import type { Layer } from 'types/layers';
 
 import IndicatorExtent from './extent';
 import IndicatorSource from './source';
-import IndicatorYear from './year';
 import type { IndicatorSourcesProps } from './types';
-import { da } from 'date-fns/locale';
+import IndicatorYear from './year';
 
-const NATIONAL_PREFIX = 'mangrove_national_dashboard_layer';
+const NATIONAL_LAYER_ID = 'mangrove_national_dashboard_layer';
 
 const IndicatorSources = ({
-  id,
   source,
   locationIso,
   layerIndex,
@@ -30,86 +29,110 @@ const IndicatorSources = ({
   setYearSelected,
 }: IndicatorSourcesProps) => {
   const [activeLayers, setActiveLayers] = useRecoilState(activeLayersAtom);
-  const activeLayerIds = useMemo(() => (activeLayers ?? []).map((l) => l.id), [activeLayers]);
 
-  const isAnyNationalActive = useMemo(
-    () => activeLayerIds.some((layerId) => layerId.startsWith(NATIONAL_PREFIX)),
-    [activeLayerIds]
+  const layerId = useMemo(
+    () => `${NATIONAL_LAYER_ID}_${locationIso}` as `mangrove_national_dashboard_layer_${string}`,
+    [locationIso]
   );
 
-  const isThisLayerActive = useMemo(() => activeLayerIds.includes(id), [activeLayerIds, id]);
+  const isNationalLayerActive = useMemo(
+    () => (activeLayers ?? []).some((layer) => layer.id === layerId),
+    [activeLayers, layerId]
+  );
+
+  const buildLayer = useCallback(
+    (): Layer => ({
+      id: layerId,
+      opacity: '1',
+      visibility: 'visible',
+      settings: {
+        name: source,
+        location: locationIso,
+        layerIndex,
+        source: dataSource.layer_link,
+        source_layer: dataSource.source_layer,
+        year: yearSelected,
+      },
+    }),
+    [
+      layerId,
+      source,
+      locationIso,
+      layerIndex,
+      dataSource.layer_link,
+      dataSource.source_layer,
+      yearSelected,
+    ]
+  );
+
+  const isNationalLayer = useCallback((id: Layer['id']) => {
+    return typeof id === 'string' && id.startsWith(`${NATIONAL_LAYER_ID}_`);
+  }, []);
+
+  const replaceNationalLayer = useCallback(
+    (layers: Layer[] = []): Layer[] => {
+      const nextLayer = buildLayer();
+      const withoutNationalLayers = layers.filter((layer) => !isNationalLayer(layer.id));
+
+      return [nextLayer, ...withoutNationalLayers];
+    },
+    [buildLayer, isNationalLayer]
+  );
+
+  const updateCurrentLayer = useCallback(
+    (layers: Layer[] = []): Layer[] =>
+      layers.map((layer) =>
+        layer.id === layerId
+          ? {
+              ...layer,
+              settings: {
+                ...layer.settings,
+                name: source,
+                location: locationIso,
+                layerIndex,
+                source: dataSource.layer_link,
+                source_layer: dataSource.source_layer,
+                year: yearSelected,
+              },
+            }
+          : layer
+      ),
+    [
+      layerId,
+      source,
+      locationIso,
+      layerIndex,
+      dataSource.layer_link,
+      dataSource.source_layer,
+      yearSelected,
+    ]
+  );
 
   useEffect(() => {
-    if (!isThisLayerActive) return;
+    if (!isNationalLayerActive) return;
 
-    const layersUpdate = updateLayers(
-      {
-        id,
-        opacity: '1',
-        visibility: 'visible',
-        settings: {
-          name: source,
-          location: locationIso,
-          layerIndex,
-          source: dataSource.layer_link,
-          source_layer: dataSource.source_layer,
-        },
-      },
-      activeLayers ?? []
-    );
-
-    setActiveLayers(layersUpdate);
-  }, [
-    activeLayers,
-    dataSource?.layer_link,
-    dataSource?.source_layer,
-    id,
-    isThisLayerActive,
-    layerIndex,
-    locationIso,
-    setActiveLayers,
-    source,
-  ]);
+    setActiveLayers((prev) => updateCurrentLayer(prev ?? []));
+  }, [isNationalLayerActive, updateCurrentLayer, setActiveLayers]);
 
   const handleClick = useCallback(() => {
-    const nextLayers: ActiveLayers[] = isAnyNationalActive
-      ? (activeLayers ?? []).filter((w) => !w.id.startsWith(NATIONAL_PREFIX))
-      : [
-          ...(activeLayers ?? []),
-          {
-            id,
-            opacity: '1',
-            visibility: 'visible',
-            settings: {
-              name: source,
-              location: locationIso,
-              layerIndex,
-              source: dataSource.layer_link,
-              source_layer: dataSource.source_layer,
-            },
-          },
-        ];
+    setActiveLayers((prev) => {
+      const prevLayers = prev ?? [];
 
-    if (!isAnyNationalActive) {
-      trackEvent(`Add mangrove national dashboard indicator layer - ${id}`, {
+      if (prevLayers.some((layer) => layer.id === layerId)) {
+        return prevLayers.filter((layer) => layer.id !== layerId);
+      }
+
+      return replaceNationalLayer(prevLayers);
+    });
+
+    if (!isNationalLayerActive) {
+      trackEvent(`Add mangrove national dashboard indicator layer - ${locationIso}`, {
         category: 'Layers',
         action: 'Toggle',
-        label: `Add mangrove national dashboard indicator layer - ${id}`,
+        label: `Add mangrove national dashboard indicator layer - ${locationIso}`,
       });
     }
-
-    setActiveLayers(nextLayers);
-  }, [
-    activeLayers,
-    dataSource?.layer_link,
-    dataSource?.source_layer,
-    id,
-    isAnyNationalActive,
-    layerIndex,
-    locationIso,
-    setActiveLayers,
-    source,
-  ]);
+  }, [setActiveLayers, layerId, replaceNationalLayer, isNationalLayerActive, locationIso]);
 
   return (
     <div className="flex w-full items-start justify-between space-x-4 py-4">
@@ -125,8 +148,8 @@ const IndicatorSources = ({
             name: source,
           }}
         />
-        <SwitchWrapper id={id}>
-          <SwitchRoot id={id} onClick={handleClick} checked={isThisLayerActive}>
+        <SwitchWrapper id={layerId}>
+          <SwitchRoot id={layerId} onClick={handleClick} checked={isNationalLayerActive}>
             <SwitchThumb />
           </SwitchRoot>
         </SwitchWrapper>

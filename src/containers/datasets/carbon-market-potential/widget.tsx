@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
+import { trackEvent } from '@/lib/analytics/ga';
 import cn from '@/lib/classnames';
 
 import NoData from '@/containers/widgets/no-data';
 
-import Icon from '@/components/ui/icon';
 import Loading from '@/components/ui/loading';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
@@ -14,12 +14,11 @@ import {
   WIDGET_SELECT_ARROW_STYLES,
 } from 'styles/widgets';
 
-import ARROW_SVG from '@/svgs/ui/arrow-filled.svg?sprite';
+import ARROW_SVG from '@/svgs/ui/arrow-filled';
 
 import CarbonMarketPotentialChart from './chart';
 import { useCarbonMarketPotential } from './hooks';
 import type { Unit } from './types';
-import { trackEvent } from '@/lib/analytics/ga';
 
 const CarbonMarketPotentialWidget = () => {
   const [unit, setUnit] = useState<Unit>({
@@ -53,10 +52,10 @@ const CarbonMarketPotentialWidget = () => {
               <PopoverTrigger asChild>
                 <span className={`${WIDGET_SELECT_STYLES} print:border-hidden`}>
                   {label}
-                  <Icon
-                    icon={ARROW_SVG}
-                    className={`${`${WIDGET_SELECT_ARROW_STYLES} print:hidden`} print:hidden`}
-                    description="Arrow"
+                  <ARROW_SVG
+                    className={`fill-current ${`${WIDGET_SELECT_ARROW_STYLES} print:hidden`} print:hidden`}
+                    role="img"
+                    title="Arrow"
                   />
                 </span>
               </PopoverTrigger>
@@ -96,10 +95,10 @@ const CarbonMarketPotentialWidget = () => {
               <PopoverTrigger asChild>
                 <span className={`${WIDGET_SELECT_STYLES} print:border-hidden`}>
                   {unit.label}
-                  <Icon
-                    icon={ARROW_SVG}
-                    className={`${WIDGET_SELECT_ARROW_STYLES} print:hidden`}
-                    description="Arrow"
+                  <ARROW_SVG
+                    className={`fill-current ${WIDGET_SELECT_ARROW_STYLES} print:hidden`}
+                    role="img"
+                    title="Arrow"
                   />
                 </span>
               </PopoverTrigger>

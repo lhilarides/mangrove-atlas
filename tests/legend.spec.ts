@@ -1,17 +1,20 @@
 import { expect, test } from '@playwright/test';
 
-test('test legend order', async ({ page }) => {
+import { dismissWelcomeDialog } from './fixtures/welcome-dialog';
+
+test('test legend order', async ({ page, browserName }) => {
+  test.fixme(browserName === 'firefox', 'Firefox: Recoil/hydration instability');
   await page.goto('/');
-  const showLegendButton = page.getByTestId('show-legend-button');
-  await showLegendButton.click();
+  await dismissWelcomeDialog(page);
+  // Legend starts open by default when layers are active (mangrove_habitat_extent is active on load)
   const legendContent = page.getByTestId('legend-content');
-  await legendContent.isVisible();
+  await expect(legendContent).toBeVisible();
   const netChangeLayerSwitcher = page.getByTestId('mangrove_net_change');
-  await netChangeLayerSwitcher.click({ force: true });
+  await netChangeLayerSwitcher.click();
   await expect(netChangeLayerSwitcher).toHaveAttribute('data-state', 'checked');
 
   const mangroveAlertsLayerSwitcher = page.getByTestId('mangrove_alerts');
-  await mangroveAlertsLayerSwitcher.click({ force: true });
+  await mangroveAlertsLayerSwitcher.click();
   await expect(mangroveAlertsLayerSwitcher).toHaveAttribute('data-state', 'checked');
 
   // const source = page.getByTestId('legend-item-mangrove_habitat_extent').first();

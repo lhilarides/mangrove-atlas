@@ -14,9 +14,7 @@ import NavigationBar from '@/containers/navigation/mobile';
 import WelcomeIntroMessage from '@/containers/welcome-message';
 import WidgetsContainer from '@/containers/widgets';
 
-import Icon from '@/components/ui/icon';
-
-import LOGO_MOBILE_SVG from '@/svgs/logo-mobile.svg?sprite';
+import LOGO_MOBILE_SVG from '@/svgs/logo-mobile';
 
 const MobileLayout = () => {
   const mapView = useRecoilValue(mapViewAtom);
@@ -24,7 +22,7 @@ const MobileLayout = () => {
 
   const handleReset = useCallback(() => {
     if (map) {
-      map?.['default-desktop-no-print'].flyTo({
+      map?.['default-mobile-no-print'].flyTo({
         center: [0, 20],
         zoom: 2,
       });
@@ -41,10 +39,10 @@ const MobileLayout = () => {
           height={100}
           className="h-[72px] w-[330px]"
         />
-        <Icon
-          icon={LOGO_MOBILE_SVG}
-          className="absolute top-2 left-4 z-50 h-8 w-20"
-          description="Logo"
+        <LOGO_MOBILE_SVG
+          className="absolute top-2 left-4 z-50 h-8 w-20 fill-current"
+          role="img"
+          title="Logo"
         />
       </Link>
       <NavigationBar />

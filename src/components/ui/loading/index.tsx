@@ -1,48 +1,51 @@
-import { FC } from 'react';
-
 import cn from '@/lib/classnames';
 
-import cx from 'classnames';
-import { motion, AnimatePresence } from 'motion/react';
+import { IconBaseProps } from 'react-icons/lib/iconBase';
+import { LuLoaderCircle } from 'react-icons/lu';
 
-import Icon from '@/components/ui/icon';
+const LuLoaderIcon = LuLoaderCircle as unknown as (p: IconBaseProps) => JSX.Element;
 
-import LOADING_SVG from '@/svgs/ui/loading.svg?sprite';
+type LoadingProps = {
+  visible?: boolean;
+  className?: string; // wrapper
+  iconClassName?: string; // icon
+  label?: string;
+} & IconBaseProps;
 
-import type { LoadingProps } from './types';
-export const Loading: FC<LoadingProps> = ({
-  visible = false,
+function hasSizeClass(className?: string) {
+  if (!className) return false;
+  return className
+    .split(' ')
+    .some((c) => c.startsWith('w-') || c.startsWith('h-') || c.startsWith('size-'));
+}
+
+function Loading({
+  visible = true,
   className,
-  iconClassName = 'w-12 h-12x',
-  transition = {},
-}: LoadingProps) => {
-  const variants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
-  };
+  iconClassName,
+  label = 'Loading',
+  ...props
+}: LoadingProps) {
   if (!visible) return null;
+
+  const hasCustomSize = hasSizeClass(iconClassName);
+
   return (
-    <AnimatePresence>
-      <motion.div
-        key="loading"
-        {...variants}
-        transition={transition}
-        className={cx(className, {
-          'opacity-50': true,
-        })}
-      >
-        <Icon
-          icon={LOADING_SVG}
-          className={cn({
-            'text-brand-400 opacity-50': true,
-            [iconClassName]: !!iconClassName,
-          })}
-          description="Loading..."
-        />
-      </motion.div>
-    </AnimatePresence>
+    <span
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      className={cn('inline-flex w-full flex-1 items-center justify-center', className)}
+    >
+      <span className="sr-only">{label}</span>
+
+      <LuLoaderIcon
+        aria-hidden="true"
+        className={cn('text-brand-800 animate-spin', !hasCustomSize && 'size-4', iconClassName)}
+        {...props}
+      />
+    </span>
   );
-};
+}
 
 export default Loading;

@@ -1,5 +1,7 @@
 import { useMemo, useCallback } from 'react';
 
+import { trackEvent } from '@/lib/analytics/ga';
+
 import { activeLayersAtom } from '@/store/layers';
 
 import { useRecoilState } from 'recoil';
@@ -13,13 +15,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Icon } from '@/components/ui/icon';
 import { SwitchWrapper, SwitchRoot, SwitchThumb } from '@/components/ui/switch';
-import type { ActiveLayers } from 'types/layers';
+import type { Layer } from 'types/layers';
 import type { WidgetSlugType } from 'types/widget';
 
-import INFO_SVG from '@/svgs/ui/info.svg?sprite';
-import { trackEvent } from '@/lib/analytics/ga';
+import INFO_SVG from '@/svgs/ui/info';
 
 type ControlTypes = {
   id: string;
@@ -38,24 +38,24 @@ const Controls = ({ id, origin }: ControlTypes) => {
   const handleClick = useCallback(() => {
     const layersUpdate = isActive
       ? activeLayers?.filter((w) => w.id !== id)
-      : ([{ id, opacity: '1', visibility: 'visible' }, ...activeLayers] as ActiveLayers[]);
+      : ([{ id, opacity: '1', visibility: 'visible' }, ...activeLayers] as Layer[]);
 
     if (!isActive) {
-      // Google Analytics tracking
       trackEvent(`Suggested layer - ${id}`, {
         action: 'Layers - Contextual',
         label: `Suggested Contextual Layer - ${id}. From: ${origin}`,
         value: origin,
       });
     }
+
     setActiveLayers(layersUpdate);
-  }, [isActive, activeLayers, setActiveLayers, id]);
+  }, [isActive, activeLayers, setActiveLayers, id, origin]);
 
   return (
     <div className="flex items-start space-x-2">
       <Dialog>
-        <DialogTrigger>
-          <Icon icon={INFO_SVG} className="text-brand-800 h-7.5 w-7.5" description="Info" />
+        <DialogTrigger className="border-brand-800/20 flex h-7.5 w-7.5 items-center justify-center rounded-full border-2">
+          <INFO_SVG className="text-brand-800 fill-current" role="img" title="Info" />
         </DialogTrigger>
         <DialogContent className="w-screen md:mb-20 md:w-auto">
           <DialogTitle className="sr-only">Info</DialogTitle>

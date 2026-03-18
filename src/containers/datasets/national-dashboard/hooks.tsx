@@ -6,11 +6,11 @@ import { useRouter } from 'next/router';
 
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import chroma from 'chroma-js';
-import { Visibility } from '@/types/layers';
 
 import { useLocation } from '@/containers/datasets/locations/hooks';
 import type { LocationTypes } from '@/containers/datasets/locations/types';
 
+import { Visibility } from '@/types/layers';
 import type { UseParamsOptions } from 'types/widget';
 
 import API from 'services/api';
@@ -62,11 +62,21 @@ export function useNationalDashboard(
   });
 }
 
-export function useSource({ settings }: { settings: LayerSettingsType }): SourceProps {
+export function useSource({
+  settings,
+}: {
+  settings: LayerSettingsType;
+}): (SourceProps & { url: string }) | null {
+  if (!settings?.source) return null;
+
+  const url = settings.source.startsWith('mapbox://')
+    ? settings.source
+    : `mapbox://${settings.source}`;
+
   return {
     id: 'national-dashboard-sources',
     type: 'vector',
-    url: `mapbox://${settings?.source}`,
+    url,
   };
 }
 
@@ -80,28 +90,18 @@ export function useLayers({
   opacity?: number;
   visibility?: Visibility;
   settings: LayerSettingsType;
-}): LayerProps {
-  const color = colorsScale.filter((c, i) => i === settings.layerIndex) as string[];
-  const {
-    query: { params: queryParams },
-  } = useRouter();
-  const locationType = queryParams?.[0] as LocationTypes;
-  const location = queryParams?.[1];
+}): LayerProps | null {
+  if (!settings?.source_layer || settings.layerIndex == null) return null;
 
-  const {
-    data: { iso },
-  } = useLocation(location, locationType);
-
-  if (!settings || settings.location !== iso) return null;
+  const color = colorsScale[settings.layerIndex] ?? colorsScale[0];
 
   return {
     id,
-    // key: `${settings.source_layer}`,
     source: 'national-dashboard-sources',
     'source-layer': settings.source_layer,
     type: 'fill',
     paint: {
-      'fill-color': color[0],
+      'fill-color': color,
       'fill-opacity': opacity,
     },
     layout: {

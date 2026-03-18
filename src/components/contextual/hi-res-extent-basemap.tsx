@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import cn from '@/lib/classnames';
 import { trackEvent } from '@/lib/analytics/ga';
+import cn from '@/lib/classnames';
 
 import { activeLayersAtom } from '@/store/layers';
 
@@ -11,7 +11,7 @@ import { HIGH_RESOLUTION_EXTENT } from '@/containers/datasets/contextual-layers/
 
 import RadioGroup from '@/components/ui/radio-group';
 import RadioGroupItem from '@/components/ui/radio-group/radio-group-item';
-import type { ActiveLayers } from 'types/layers';
+import type { Layer } from 'types/layers';
 import type { ContextualBasemapsId } from 'types/widget';
 
 const HighResolutionExtentBasemap = () => {
@@ -33,7 +33,7 @@ const HighResolutionExtentBasemap = () => {
                 visibility: 'visible',
               },
               ...activeLayers,
-            ] as ActiveLayers[]);
+            ] as Layer[]);
       setActiveLayers(layersUpdate);
 
       // Google Analytics tracking

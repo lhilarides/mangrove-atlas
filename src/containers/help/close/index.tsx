@@ -2,11 +2,9 @@ import { activeGuideAtom } from '@/store/guide';
 
 import { useRecoilState } from 'recoil';
 
-import { Icon } from '@/components/ui/icon';
+import CLOSE_SVG from '@/svgs/ui/close';
 
-import CLOSE_SVG from '@/svgs/ui/close.svg?sprite';
-
-export const CloseHelpGuide = () => {
+const CloseHelpGuide = () => {
   const [isActive, setIsActive] = useRecoilState(activeGuideAtom);
 
   if (!isActive) return null;
@@ -17,7 +15,7 @@ export const CloseHelpGuide = () => {
       onClick={() => setIsActive(false)}
     >
       <span>Close navigation help</span>
-      <Icon icon={CLOSE_SVG} />
+      <CLOSE_SVG className="h-4 w-4" role="img" aria-hidden={true} />
     </div>
   );
 };

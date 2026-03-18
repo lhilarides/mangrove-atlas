@@ -1,21 +1,28 @@
 'use client';
 
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
+
+import { useRouter } from 'next/router';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from 'components/ui/form';
-import { Input } from 'components/ui/input';
-
 import { signOut, useSession } from 'next-auth/react';
-import { Button } from 'components/ui/button';
+import { z } from 'zod';
 
 import { usePutUpdateUser } from '@/containers/auth/hooks';
-import { useRouter } from 'next/router';
-import { Checkbox, CheckboxIndicator } from 'components/ui/checkbox';
-import { Icon } from 'components/ui/icon';
 
-import CHECK_SVG from '@/svgs/ui/check.svg?sprite';
+import { Button } from 'components/ui/button';
+import { Checkbox, CheckboxIndicator } from 'components/ui/checkbox';
+import CHECK_SVG from '@/svgs/ui/check';
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 const formSchema = z.object({
   username: z.string().min(1, { message: 'Please enter your name' }).optional(),
@@ -218,10 +225,10 @@ const AccountContent = () => {
                     disabled={true}
                   >
                     <CheckboxIndicator className="text-black/85">
-                      <Icon
-                        icon={CHECK_SVG}
+                      <CHECK_SVG
                         className="h-full w-full fill-current"
-                        description="Checkmark"
+                        role="img"
+                        title="Checkmark"
                       />
                     </CheckboxIndicator>
                   </Checkbox>

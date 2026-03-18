@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+
 import cn from '@/lib/classnames';
 
 import { Slot } from '@radix-ui/react-slot';
@@ -9,7 +10,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-brand-800 text-white hover:bg-opacity-90',
+        default: 'bg-brand-800 text-white hover:bg-brand-800/90',
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
           'border text-brand-800 bg-transparent hover:bg-accent hover:text-accent-foreground border-brand-800/15',

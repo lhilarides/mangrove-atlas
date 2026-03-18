@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { trackEvent } from '@/lib/analytics/ga';
 import cn from '@/lib/classnames';
 
 import { activeLayersAtom } from '@/store/layers';
@@ -13,7 +14,6 @@ import type {
 } from '@/containers/datasets/flood-protection/types';
 // import NoData from '@/containers/widgets/no-data';
 
-import Icon from '@/components/ui/icon';
 import Loading from '@/components/ui/loading';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { SwitchRoot, SwitchThumb, SwitchWrapper } from '@/components/ui/switch';
@@ -23,17 +23,16 @@ import {
   WIDGET_SENTENCE_STYLE,
   WIDGET_SUBTITLE_STYLE,
 } from 'styles/widgets';
-import type { ActiveLayers } from 'types/layers';
+import type { Layer } from 'types/layers';
 import { WidgetSlugType } from 'types/widget';
 
-import ARROW_SVG from '@/svgs/ui/arrow.svg?sprite';
-import TRIANGLE_SVG from '@/svgs/ui/triangle.svg?sprite';
+import ARROW_SVG from '@/svgs/ui/arrow';
+import TRIANGLE_SVG from '@/svgs/ui/triangle';
 
 import FloodProtectionChart from './chart/chart';
 import { LABELS, UNITS_LABELS } from './constants';
 import { useMangrovesFloodProtection } from './hooks';
 import type { ChartData, Config } from './types';
-import { trackEvent } from '@/lib/analytics/ga';
 
 const FloodProtection = ({
   indicator,
@@ -59,7 +58,7 @@ const FloodProtection = ({
       );
       setPeriod(period);
     },
-    [setPeriod]
+    [setPeriod, selectedPeriod]
   );
 
   const { isFetched, isFetching, data } = useMangrovesFloodProtection(selectedPeriod, {
@@ -88,7 +87,7 @@ const FloodProtection = ({
   const handleClick = () => {
     const layersUpdate = isActive
       ? activeLayers?.filter((w) => w.id !== id)
-      : ([...activeLayers, { id, opacity: '1', visibility: 'visible' }] as ActiveLayers[]);
+      : ([...activeLayers, { id, opacity: '1', visibility: 'visible' }] as Layer[]);
 
     // Google Analytics tracking
     if (!isActive) {
@@ -188,10 +187,10 @@ const FloodProtection = ({
               <PopoverTrigger asChild>
                 <span className={`${WIDGET_SELECT_STYLES} print:border-hidden`}>
                   {LABELS[selectedPeriod].short}
-                  <Icon
-                    icon={ARROW_SVG}
-                    className="absolute -bottom-2.5 left-1/2 inline-block h-2 w-2 -translate-x-1/2 print:hidden"
-                    description="Arrow"
+                  <ARROW_SVG
+                    className="absolute -bottom-2.5 left-1/2 inline-block h-2 w-2 -translate-x-1/2 fill-current print:hidden"
+                    role="img"
+                    title="Arrow"
                   />
                 </span>
               </PopoverTrigger>
@@ -242,11 +241,11 @@ const FloodProtection = ({
               }}
             >
               {!isWorldwide && (
-                <Icon
-                  icon={TRIANGLE_SVG}
-                  className="absolute -top-7 h-5 w-5"
+                <TRIANGLE_SVG
+                  className="absolute -top-7 h-5 w-5 fill-current"
                   style={{ left: trianglePosition }}
-                  description="Arrow"
+                  role="img"
+                  title="Arrow"
                 />
               )}
             </div>

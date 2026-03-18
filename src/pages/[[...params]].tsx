@@ -1,11 +1,9 @@
 import { printModeState } from '@/store/print-mode';
 
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from './api/auth/[...nextauth]';
-
 import { QueryClient, dehydrate } from '@tanstack/react-query';
 import turfBbox from '@turf/bbox';
 import type { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth/next';
 import { useRecoilValue } from 'recoil';
 import { useWindowSize } from 'usehooks-ts';
 
@@ -19,6 +17,8 @@ import { breakpoints } from '@/styles/styles.config';
 
 import API from 'services/api';
 
+import { authOptions } from './api/auth/[...nextauth]';
+
 const Home = () => {
   const isPrintingMode = useRecoilValue(printModeState);
 
@@ -31,6 +31,7 @@ const Home = () => {
         description="Global Mangrove Watch (GMW) is an online platform that provides the remote sensing data and tools for monitoring mangroves necessary for this. It gives universal access to near real-time information on where and what changes there are to mangroves across the world, and highlights why they are valuable."
       />
       {screenWidth >= breakpoints.md && <DesktopLayout />}
+      {screenWidth < breakpoints.md && <MobileLayout />}
     </>
   );
 };

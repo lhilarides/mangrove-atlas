@@ -1,15 +1,15 @@
+import cn from '@/lib/classnames';
+
 import { WIDGET_CARD_WRAPPER_STYLE } from 'styles/widgets';
 
-import Fisheries from './fisheries/widget';
 import CommercialFisheriesProduction from './commercial-fisheries-production/widget';
-import cn from '@/lib/classnames';
+import Fisheries from './fisheries/widget';
 
 const FisheriesWrapper = () => {
   return (
     <div className={cn(WIDGET_CARD_WRAPPER_STYLE, 'space-y-4')}>
       <Fisheries />
-      <div className="bg-brand-800/30 absolute right-4 left-4 my-4 h-0.5" />
-      <CommercialFisheriesProduction />
+      <hr className="bg-brand-800/30 -mx-8 my-8 h-0.5 border-0" /> <CommercialFisheriesProduction />
     </div>
   );
 };

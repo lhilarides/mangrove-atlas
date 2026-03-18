@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useLocation } from '@/containers/datasets/locations/hooks';
 import { LocationTypes } from '@/containers/datasets/locations/types';
 
+import SafeHTML from '@/components/dompurify';
 import Loading from '@/components/ui/loading';
 import { WIDGET_CARD_WRAPPER_STYLE } from 'styles/widgets';
 
@@ -114,7 +115,7 @@ const ClimateWatchNationalDashboard = () => {
       {isFetched && isFetchedNDCSContentOverview && data && NDCSContentOverview && (
         <>
           <div className="relative">
-            <div className="bg-brand-800 bg-opacity-30 absolute -right-8 -left-8 h-px" />
+            <div className="bg-brand-800/30 absolute -right-8 -left-8 h-px" />
           </div>
           <div className="flex justify-between py-4">
             <a
@@ -139,7 +140,7 @@ const ClimateWatchNationalDashboard = () => {
           </div>
           {data.widgetIntroduction && <p>{data.widgetIntroduction}</p>}
           <div className="space-y-5">
-            <div dangerouslySetInnerHTML={{ __html: NDCSContentOverview?.indc_summary }} />
+            <SafeHTML html={NDCSContentOverview?.indc_summary} />
             {Indicators.map((indicator) => (
               <Indicator key={indicator.label} {...indicator} />
             ))}

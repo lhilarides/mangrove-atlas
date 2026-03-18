@@ -7,7 +7,6 @@ import {
   Cross1Icon,
   ReloadIcon,
 } from '@radix-ui/react-icons';
-
 import { useTheme } from 'next-themes';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
 
@@ -17,7 +16,7 @@ const Toaster = ({ icon = false, ...props }: ToasterProps & { icon?: boolean }) 
   return (
     <Sonner
       theme={theme as ToasterProps['theme']}
-      className="toaster font-inter group text-sm font-bold shadow-[0px_4px_12px_0px_#00000014]"
+      className="toaster group font-inter text-sm font-bold shadow-[0px_4px_12px_0px_#00000014]"
       icons={
         !icon
           ? undefined

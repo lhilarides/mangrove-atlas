@@ -3,6 +3,11 @@ import AlertsInfo from '@/containers/datasets/alerts/info.mdx';
 import AlertsLayer from '@/containers/datasets/alerts/layer';
 import AlertsMapLegend from '@/containers/datasets/alerts/map-legend';
 import AlertsWidget from '@/containers/datasets/alerts/widget';
+import AlertsDownloadStaging from '@/containers/datasets/alerts-staging/download';
+import AlertsInfoStaging from '@/containers/datasets/alerts-staging/info.mdx';
+import AlertsLayerStaging from '@/containers/datasets/alerts-staging/layer';
+import AlertsMapLegendStaging from '@/containers/datasets/alerts-staging/map-legend';
+import AlertsWidgetStaging from '@/containers/datasets/alerts-staging/widget';
 import BiomassDownload from '@/containers/datasets/biomass/download';
 import BiomassInfo from '@/containers/datasets/biomass/info.mdx';
 import BiomassLayer from '@/containers/datasets/biomass/layer';
@@ -49,10 +54,14 @@ import DriversChangeMapLegend from '@/containers/datasets/drivers-change/map-leg
 import DriversChangeWidget from '@/containers/datasets/drivers-change/widget';
 import EmissionsMitigationInfo from '@/containers/datasets/emissions-mitigation/info.mdx';
 import EmissionsMitigationWidget from '@/containers/datasets/emissions-mitigation/widget';
+import FisheriesWidget from '@/containers/datasets/fisheries';
+import CommercialFisheriesProductionDownload from '@/containers/datasets/fisheries/commercial-fisheries-production/download';
+import CommercialFisheriesProductionInfo from '@/containers/datasets/fisheries/commercial-fisheries-production/info.mdx';
+import MangrovesCommercialFisheriesProductionLayer from '@/containers/datasets/fisheries/commercial-fisheries-production/layer';
+import CommercialFisheriesProductionMapLegend from '@/containers/datasets/fisheries/commercial-fisheries-production/map-legend';
 import FisheriesInfo from '@/containers/datasets/fisheries/fisheries/info.mdx';
 import FisheriesLayer from '@/containers/datasets/fisheries/fisheries/layer';
 import FisheriesMapLegend from '@/containers/datasets/fisheries/fisheries/map-legend';
-import FisheriesWidget from '@/containers/datasets/fisheries';
 import FloodProtectionWidget from '@/containers/datasets/flood-protection';
 import FloodProtectionInfo from '@/containers/datasets/flood-protection/info.mdx';
 import FloodProtectionAreaMapLegend from '@/containers/datasets/flood-protection/map-legend/area';
@@ -114,10 +123,6 @@ import SpeciesThreatenedWidget from '@/containers/datasets/species-threatened/wi
 
 import BasemapsContextualLayers from '@/components/contextual/contextual-layers';
 import { WidgetSlugType } from 'types/widget';
-import MangrovesCommercialFisheriesProductionLayer from '@/containers/datasets/fisheries/commercial-fisheries-production/layer';
-import CommercialFisheriesProductionMapLegend from '@/containers/datasets/fisheries/commercial-fisheries-production/map-legend';
-import CommercialFisheriesProductionDownload from '@/containers/datasets/fisheries/commercial-fisheries-production/download';
-import CommercialFisheriesProductionInfo from '@/containers/datasets/fisheries/commercial-fisheries-production/info.mdx';
 
 type WidgetsCollection = Partial<Record<WidgetSlugType, () => JSX.Element>>;
 
@@ -125,7 +130,10 @@ export const WIDGETS: WidgetsCollection = {
   mangrove_habitat_extent: HabitatExtentWidget,
   mangrove_habitat_change: HabitatChangeWidget,
   mangrove_net_change: NetChangeWidget,
-  mangrove_alerts: AlertsWidget,
+  mangrove_alerts:
+    JSON.parse(process.env.NEXT_PUBLIC_FEATURED_FLAGS)['mangrove_alerts'] === true
+      ? AlertsWidget
+      : AlertsWidgetStaging,
   mangrove_biomass: BiomassWidget,
   mangrove_drivers_change: DriversChangeWidget,
   mangrove_height: HeightWidget,
@@ -159,7 +167,10 @@ export const LAYERS = {
   mangrove_habitat_extent: HabitatExtentLayer,
   'hi-res-extent': HiResExtentLayer,
   mangrove_net_change: NetChangeLayer,
-  mangrove_alerts: AlertsLayer,
+  mangrove_alerts:
+    JSON.parse(process.env.NEXT_PUBLIC_FEATURED_FLAGS)['mangrove_alerts'] === true
+      ? AlertsLayer
+      : AlertsLayerStaging,
   mangrove_biomass: BiomassLayer,
   mangrove_blue_carbon: BlueCarbonLayer,
   mangrove_drivers_change: DriversChangeLayer,
@@ -199,7 +210,10 @@ export const MAP_LEGENDS = {
   mangrove_blue_carbon: BlueCarbonMapLegend,
   mangrove_drivers_change: DriversChangeMapLegend,
   mangrove_fisheries: FisheriesMapLegend,
-  mangrove_alerts: AlertsMapLegend,
+  mangrove_alerts:
+    JSON.parse(process.env.NEXT_PUBLIC_FEATURED_FLAGS)['mangrove_alerts'] === true
+      ? AlertsMapLegend
+      : AlertsMapLegendStaging,
   mangrove_allen_coral_reef: AllenCoralReefMapLegend,
   mangrove_salt_marsh: SaltMarshMapLegend,
   mangrove_tidal_flats: TidalFlatsMapLegend,
@@ -227,7 +241,10 @@ export const INFO = {
   mangrove_protected_areas: ProtectionInfo,
   mangrove_drivers_change: DriversChangeInfo,
   mangrove_net_change: NetChangeInfo,
-  mangrove_alerts: AlertsInfo,
+  mangrove_alerts:
+    JSON.parse(process.env.NEXT_PUBLIC_FEATURED_FLAGS)['mangrove_alerts'] === true
+      ? AlertsInfo
+      : AlertsInfoStaging,
   mangrove_restoration: RestorationInfo,
   mangrove_biomass: BiomassInfo,
   mangrove_height: HeightInfo,
@@ -254,7 +271,10 @@ export const INFO = {
 export const DOWNLOAD = {
   mangrove_habitat_extent: HabitatExtentDownload,
   // mangrove_net_change: NetChangeDownload,
-  mangrove_alerts: AlertsDownload,
+  mangrove_alerts:
+    JSON.parse(process.env.NEXT_PUBLIC_FEATURED_FLAGS)['mangrove_alerts'] === true
+      ? AlertsDownload
+      : AlertsDownloadStaging,
   mangrove_biomass: BiomassDownload,
   // mangrove_height: HeightDownload,
   mangrove_blue_carbon: BlueCarbonDownload,

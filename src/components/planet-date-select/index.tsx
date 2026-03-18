@@ -1,4 +1,16 @@
 import { useCallback, useMemo } from 'react';
+
+import { trackEvent } from '@/lib/analytics/ga';
+import cn from '@/lib/classnames';
+
+import { activeLayersAtom } from '@/store/layers';
+
+import { orderBy } from 'lodash-es';
+import { useRecoilState } from 'recoil';
+
+import type { BasemapId } from '@/containers/datasets/contextual-layers/basemaps';
+import { useMosaicsFromSeriesPlanetSatelliteBasemaps } from '@/containers/datasets/contextual-layers/basemaps-planet/hooks';
+
 import {
   Select,
   SelectTrigger,
@@ -6,19 +18,9 @@ import {
   SelectItem,
   SelectIcon,
 } from '@/components/ui/select';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
-
-import cn from '@/lib/classnames';
-import { trackEvent } from '@/lib/analytics/ga';
-
-import { activeLayersAtom } from '@/store/layers';
-import { orderBy } from 'lodash-es';
-import { useRecoilState } from 'recoil';
-
-import type { BasemapId } from '@/containers/datasets/contextual-layers/basemaps';
-import { useMosaicsFromSeriesPlanetSatelliteBasemaps } from '@/containers/datasets/contextual-layers/basemaps-planet/hooks';
-
 import type { ContextualBasemapsId, MosaicId, WidgetSlugType } from 'types/widget';
+
+import CHEVRON_SVG from '@/svgs/ui/chevron';
 
 const SIZE = {
   sm: 'px-3 py-0.5',
@@ -97,7 +99,7 @@ const DateSelect = ({
           Period: <span className="text-sm font-bold">{labelToDisplay}</span>
         </p>
         <SelectIcon>
-          <ChevronDownIcon className="h-4 w-4" />
+          <CHEVRON_SVG role="img" />
         </SelectIcon>
       </SelectTrigger>
 

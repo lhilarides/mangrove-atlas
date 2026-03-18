@@ -1,18 +1,21 @@
-import { LuBookmark } from 'react-icons/lu';
-
 import cn from '@/lib/classnames';
 
+import { useSession } from 'next-auth/react';
+import { LuBookmark } from 'react-icons/lu';
+
+import LoginForm from '@/containers/auth/login-form';
 import Helper from '@/containers/help/helper';
 
+import FooterSignup from '@/components/auth/footer-signup';
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import LoginForm from '@/containers/auth/login-form';
-import { useSession } from 'next-auth/react';
+
+import ForgotPassword from '../../components/auth/forgot-password';
 import SavedAreasContent from '../navigation/menu/profile/saved-areas';
 
 const LuBookmarkIcon = LuBookmark as unknown as (p: React.SVGProps<SVGSVGElement>) => JSX.Element;
 
 const SavedAreas = ({ menuItemStyle }: { menuItemStyle?: string }) => {
-  const { status, update } = useSession();
+  const { status } = useSession();
 
   return (
     <Dialog>
@@ -36,18 +39,25 @@ const SavedAreas = ({ menuItemStyle }: { menuItemStyle?: string }) => {
         </DialogTrigger>
       </Helper>
       <DialogContent classNameContent="max-w-[calc(100vw-2rem)]">
-        <div className={menuItemStyle}>
+        <div>
           {status === 'authenticated' ? (
-            <div>
-              <h2 className="mb-4 text-lg font-semibold text-black/85">My areas</h2>
+            <div className="space-y-6">
+              <h2 className="text-3xl leading-[32px] font-light text-black/85">My areas</h2>
               <SavedAreasContent />{' '}
             </div>
           ) : (
             <div>
-              <h2 className="mb-4 text-lg font-semibold text-black/85">
+              <h2 className="mb-4 text-2xl font-light text-black/85">
                 Log in to save areas of interest and receive alerts.
               </h2>
-              <LoginForm />
+              <div className="space-y-6">
+                <LoginForm />
+                <div className="text-brand-800 w-full text-center">
+                  <ForgotPassword />
+                  <div className="my-4 h-[0.5px] w-full bg-gray-200" />
+                  <FooterSignup />
+                </div>
+              </div>
             </div>
           )}
         </div>

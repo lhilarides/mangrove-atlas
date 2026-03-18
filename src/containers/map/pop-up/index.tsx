@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect } from 'react';
+
+import { useMap } from 'react-map-gl';
+
 import cn from '@/lib/classnames';
-import { isEmpty } from 'lodash-es';
 
 import {
   mapDraggableTooltipPositionAtom,
@@ -8,25 +10,26 @@ import {
   mapDraggableTooltipPinnedAtom,
   mapDraggableTooltipDimensionsAtom,
 } from '@/store/map';
+
+import { isEmpty } from 'lodash-es';
+import { MapboxGeoJSONFeature } from 'mapbox-gl';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { useMap } from 'react-map-gl';
-import { MapboxGeoJSONFeature } from 'mapbox-gl';
+import IucnEcoregionPopup from '@/containers/datasets/iucn-ecoregion/map-popup';
+import type { IUCNEcoregionPopUpInfo } from '@/containers/datasets/iucn-ecoregion/types';
+import LocationPopup from '@/containers/datasets/locations/map-popup';
+import RestorationPopup from '@/containers/datasets/restoration/map-popup';
+import RestorationSitesPopup from '@/containers/datasets/restoration-sites/map-pop-up';
 
 import Draggable from '@/components/draggable';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 // POPUPS
-import type { IUCNEcoregionPopUpInfo } from '@/containers/datasets/iucn-ecoregion/types';
-import IucnEcoregionPopup from '@/containers/datasets/iucn-ecoregion/map-popup';
-import LocationPopup from '@/containers/datasets/locations/map-popup';
-import RestorationSitesPopup from '@/containers/datasets/restoration-sites/map-pop-up';
-import RestorationPopup from '@/containers/datasets/restoration/map-popup';
 
 import type { LocationPopUp, RestorationPopUp, RestorationSitesPopUp } from 'types/map';
 
-import MapPopupDragHandler from './pop-up-controls/drag';
 import MapPopupClose from './pop-up-controls/close';
+import MapPopupDragHandler from './pop-up-controls/drag';
 import MapPopupPin from './pop-up-controls/pin';
 
 type Position = { x: number; y: number };
@@ -60,6 +63,15 @@ const MapPopup = ({
 
   const { [mapId]: map } = useMap();
 
+  const handleClose = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setPin(false);
+      setPosition(null);
+    },
+    [setPosition, setPin]
+  );
+
   const handleClickToDocker = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -72,7 +84,8 @@ const MapPopup = ({
 
       if (!isPinned) {
         setFlash(true);
-        setTimeout(() => setFlash(false), 1000);
+        if (flashTimeoutRef.current) window.clearTimeout(flashTimeoutRef.current);
+        flashTimeoutRef.current = window.setTimeout(() => setFlash(false), 1000);
         setPosition({ x: 14, y: 16 });
         setPin(true);
       }
@@ -80,28 +93,35 @@ const MapPopup = ({
     [map, coordinates, setPosition, setPin, isPinned]
   );
 
-  useEffect(() => {
-    if (popUpRef.current) {
-      popUpRef.current.getBoundingClientRect().height;
-      popUpRef.current.getBoundingClientRect().width;
-      setMapDraggableTooltipDimensions((prev) => ({
-        h: popUpRef?.current?.getBoundingClientRect()?.height || 0,
-        w: popUpRef?.current?.getBoundingClientRect()?.width || 0,
-      }));
-    }
+  const flashTimeoutRef = useRef<number | null>(null);
+
+  useLayoutEffect(() => {
+    const el = popUpRef.current;
+    if (!el) return;
+
+    const { height, width } = el.getBoundingClientRect();
+
+    setMapDraggableTooltipDimensions({ h: height || 0, w: width || 0 });
   }, [
     locationInfo.info,
     restorationInfo.info,
     restorationsitesInfo.info,
     iucnEcoregionInfo.info,
-    popUpRef,
+    setMapDraggableTooltipDimensions,
   ]);
 
-  if (!locationInfo.info) return null;
+  useEffect(() => {
+    return () => {
+      if (flashTimeoutRef.current) window.clearTimeout(flashTimeoutRef.current);
+    };
+  }, []);
 
   const maxHeight = useMemo(() => {
+    if (typeof window === 'undefined') return undefined;
     return `calc(${window.innerHeight - (position?.y ?? 0) - 20}px)`;
   }, [position?.y]);
+
+  if (!locationInfo.info) return null;
 
   return (
     <Draggable position={position} id="draggable-map-popup" isPinned={isPinned}>
@@ -128,7 +148,7 @@ const MapPopup = ({
 
             <div className="mt-3 mr-6 flex items-center justify-end space-x-4">
               <MapPopupPin handleClickToDocker={handleClickToDocker} isPinned={isPinned} />
-              <MapPopupClose setPosition={setPosition} />
+              <MapPopupClose handleClose={handleClose} />
             </div>
           </div>
 

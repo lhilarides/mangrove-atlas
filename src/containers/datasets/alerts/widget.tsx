@@ -1,19 +1,20 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import cn from '@/lib/classnames';
 import { trackEvent } from '@/lib/analytics/ga';
+import cn from '@/lib/classnames';
 
 import { drawingToolAtom, drawingUploadToolAtom } from '@/store/drawing-tool';
 import { activeLayersAtom } from '@/store/layers';
 import { alertsEndDate, alertsStartDate } from '@/store/widgets/alerts';
 
+import type { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import ContextualLayersWrapper from '@/containers/widget/contextual-layers';
+import { widgets } from '@/containers/widgets/constants';
 import NoData from '@/containers/widgets/no-data';
 
 import Chart from 'components/chart';
-import ContextualLayersWrapper from '@/containers/widget/contextual-layers';
-import Icon from 'components/ui/icon';
 import Loading from 'components/ui/loading';
 import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover';
 import {
@@ -22,14 +23,10 @@ import {
   WIDGET_SENTENCE_STYLE,
 } from 'styles/widgets';
 
-import { widgets } from '@/containers/widgets/constants';
-
-import ARROW_SVG from '@/svgs/ui/arrow.svg?sprite';
+import ARROW_SVG from '@/svgs/ui/arrow';
 
 import { useAlerts } from './hooks';
 import Legend from './legend';
-
-import type { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 const AlertsWidget = () => {
   const [startDate, setStartDate] = useRecoilState(alertsStartDate);
@@ -127,10 +124,10 @@ const AlertsWidget = () => {
               <PopoverTrigger>
                 <span className={`${WIDGET_SELECT_STYLES} print:border-hidden`}>
                   {selectedStartDate?.label}
-                  <Icon
-                    icon={ARROW_SVG}
-                    className="absolute -bottom-2.5 left-1/2 inline-block h-2 w-2 -translate-x-1/2 print:hidden"
-                    description="Arrow"
+                  <ARROW_SVG
+                    className="absolute -bottom-2.5 left-1/2 inline-block h-2 w-2 -translate-x-1/2 fill-current print:hidden"
+                    role="img"
+                    title="Arrow"
                   />
                 </span>
               </PopoverTrigger>
@@ -171,10 +168,10 @@ const AlertsWidget = () => {
               <PopoverTrigger>
                 <span className={`${WIDGET_SELECT_STYLES} print:border-hidden`}>
                   {selectedEndDate?.label}
-                  <Icon
-                    icon={ARROW_SVG}
-                    className="absolute -bottom-2.5 left-1/2 inline-block h-2 w-2 -translate-x-1/2 print:hidden"
-                    description="Arrow"
+                  <ARROW_SVG
+                    className="absolute -bottom-2.5 left-1/2 inline-block h-2 w-2 -translate-x-1/2 fill-current print:hidden"
+                    role="img"
+                    title="Arrow"
                   />
                 </span>
               </PopoverTrigger>

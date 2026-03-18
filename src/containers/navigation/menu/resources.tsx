@@ -4,15 +4,9 @@ import Link from 'next/link';
 
 import cn from '@/lib/classnames';
 
-import { HiChevronDown } from 'react-icons/hi2';
-
-import ContactForm from '@/containers/contact';
-
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from 'components/ui/collapsible';
 
-const HiChevronDownIcon = HiChevronDown as unknown as (
-  p: React.SVGProps<SVGSVGElement>
-) => JSX.Element;
+import CHEVRON_ICON from '@/svgs/ui/chevron';
 
 const RESOURCES_LINKS = [
   {
@@ -82,7 +76,7 @@ const ResourcesMenu = ({ setSection }) => {
         Global Mangrove Alliance
       </Link>
       <Link
-        href={`${process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' ? process.env.NEXT_PUBLIC_MRTT_SITE_PROD : process.env.NEXT_PUBLIC_MRTT_SITE_STAGING}`}
+        href={`${process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' ? process.env.NEXT_PUBLIC_MRTT_SITE : process.env.NEXT_PUBLIC_MRTT_SITE}`}
         className="text-2lg hover:text-brand-800 font-light"
         rel="noopener noreferrer"
         target="_blank"
@@ -94,7 +88,7 @@ const ResourcesMenu = ({ setSection }) => {
         <CollapsibleTrigger iconType={null} className="p-0">
           <div className="text-2lg hover:text-brand-800 flex w-full items-center space-x-4 font-light">
             <span className={cn({ 'text-brand-800': isOpen })}>Resources</span>
-            <HiChevronDownIcon
+            <CHEVRON_ICON
               className={cn({
                 'h-4 w-4 stroke-[1px]': true,
                 'text-brand-800 rotate-180': isOpen,

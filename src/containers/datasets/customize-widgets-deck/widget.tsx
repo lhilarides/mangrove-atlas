@@ -19,7 +19,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import Icon from '@/components/ui/icon';
 import {
   WIDGET_CARD_WRAPPER_STYLE,
   WIDGET_SENTENCE_STYLE,
@@ -27,7 +26,7 @@ import {
   WIDGET_SELECT_ARROW_STYLES,
 } from 'styles/widgets';
 
-import ARROW_SVG from '@/svgs/ui/arrow-filled.svg?sprite';
+import ARROW_SVG from '@/svgs/ui/arrow-filled';
 
 const CustomizeWidgetsDeck = () => {
   const displayedWidgets = useRecoilValue(activeWidgetsAtom);
@@ -73,10 +72,10 @@ const CustomizeWidgetsDeck = () => {
               <DialogTrigger>
                 <span className={`${WIDGET_SELECT_STYLES} print:border-hidden`}>
                   {filteredWidgetsToDisplay.length} of {widgets.length - 1}
-                  <Icon
-                    icon={ARROW_SVG}
-                    className={`${WIDGET_SELECT_ARROW_STYLES} print:hidden`}
-                    description="Arrow"
+                  <ARROW_SVG
+                    className={`fill-current ${WIDGET_SELECT_ARROW_STYLES} print:hidden`}
+                    role="img"
+                    title="Arrow"
                   />
                 </span>
               </DialogTrigger>
@@ -99,8 +98,8 @@ const CustomizeWidgetsDeck = () => {
 
       {/* Widgets animation */}
       <div className="m-auto flex w-full flex-col items-center justify-center">
-        <div className="h-[125px] w-[197px] rounded-2xl border-[5px]  border-gray-200 bg-white" />
-        <div className="-mt-[105px] h-31.25 w-[197px] rounded-2xl border-[5px]  border-gray-200 bg-white" />
+        <div className="h-[125px] w-[197px] rounded-2xl border-[5px] border-gray-200 bg-white" />
+        <div className="-mt-[105px] h-31.25 w-[197px] rounded-2xl border-[5px] border-gray-200 bg-white" />
         <motion.div
           initial={{ x: 0, rotate: 0 }}
           animate={
@@ -127,9 +126,9 @@ const CustomizeWidgetsDeck = () => {
           role="presentation"
         />
 
-        <div className="z-10 -mt-[105px] h-[125px] w-[197px] rounded-2xl border-[5px]  border-gray-200 bg-white" />
-        <div className="z-10 -mt-[105px] h-[125px] w-[197px] rounded-2xl border-[5px]  border-gray-200 bg-white" />
-        <div className="z-10 -mt-[105px] h-[125px] w-[197px] rounded-2xl border-[5px]  border-gray-200 bg-white" />
+        <div className="z-10 -mt-[105px] h-[125px] w-[197px] rounded-2xl border-[5px] border-gray-200 bg-white" />
+        <div className="z-10 -mt-[105px] h-[125px] w-[197px] rounded-2xl border-[5px] border-gray-200 bg-white" />
+        <div className="z-10 -mt-[105px] h-[125px] w-[197px] rounded-2xl border-[5px] border-gray-200 bg-white" />
       </div>
     </div>
   );

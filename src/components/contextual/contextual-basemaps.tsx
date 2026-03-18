@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { trackEvent } from '@/lib/analytics/ga';
 import cn from '@/lib/classnames';
 
 import { activeLayersAtom } from '@/store/layers';
@@ -11,9 +12,8 @@ import { CONTEXTUAL_LAYERS_PLANET_SERIES_ATTRIBUTES } from '@/containers/dataset
 import DateSelect from '@/components/planet-date-select';
 import RadioGroup from '@/components/ui/radio-group';
 import RadioGroupItem from '@/components/ui/radio-group/radio-group-item';
-import type { ActiveLayers } from 'types/layers';
+import type { Layer } from 'types/layers';
 import type { ContextualBasemapsId } from 'types/widget';
-import { trackEvent } from '@/lib/analytics/ga';
 
 const ContextualBasemapsMapSettings = () => {
   const [activeLayers, setActiveLayers] = useRecoilState(activeLayersAtom);
@@ -45,7 +45,7 @@ const ContextualBasemapsMapSettings = () => {
                 visibility: 'visible',
               },
               ...noPlanetLayers,
-            ] as ActiveLayers[]);
+            ] as Layer[]);
       setActiveLayers(layersUpdate);
     },
     [activeLayers, setActiveLayers]

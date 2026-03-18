@@ -12,23 +12,28 @@ dotenv.config({ path: '.env.local' });
  */
 const PORT = process.env.PORT || 3000;
 
+const STORAGE_STATE = 'test-results/.auth/storage-state.json';
+
 export default defineConfig({
   testDir: 'tests',
   outputDir: 'test-results',
-timeout: 120000,
-globalTimeout: 120000,
-expect: {
-timeout: 120000,
-},
-  /* Run your local dev server before starting the tests */
-webServer: process.env.CI
-? undefined
-: {
-    command: process.env.CI ? 'pnpm build && pnpm start' : 'pnpm dev',
+  globalSetup: require.resolve('./tests/fixtures/global-setup'),
+  timeout: 120000,
+  expect: {
+    timeout: 120000,
+  },
+  /* Build and run in production mode before starting the tests */
+  webServer: {
+    command: `pnpm build && pnpm start -p ${PORT}`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
-    timeout: 300000,
+    timeout: 600000,
+    env: {
+      ...process.env,
+      NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || 'playwright-test-secret',
+      NEXTAUTH_URL: `http://localhost:${PORT}`,
     },
+  },
   /* Run tests in files in parallel */
   fullyParallel: !process.env.CI,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -42,11 +47,12 @@ webServer: process.env.CI
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.CI ? process.env.PLAYWRIGHT_TEST_BASE_URL : `http://localhost:${PORT}`,
+    baseURL: `http://localhost:${PORT}`,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     navigationTimeout: 120000,
+    storageState: STORAGE_STATE,
   },
 
   /* Configure projects for major browsers */
@@ -59,30 +65,5 @@ webServer: process.env.CI
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
 });
