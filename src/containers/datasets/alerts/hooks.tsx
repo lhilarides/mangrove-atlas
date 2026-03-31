@@ -449,7 +449,7 @@ export function useSource(): SourceProps {
   return {
     id: 'alerts-heatmap-vector',
     type: 'vector',
-    url: 'mapbox://globalmangrovewatch.10zyfs67',
+    url: 'mapbox://globalmangrovewatch.bkhacq4t',
   };
 }
 
@@ -462,11 +462,6 @@ export function useLayers({
   opacity?: number;
   visibility?: Visibility;
 }): CircleLayerSpecification[] {
-  const cutoff3 = monthsAgoYMD(3);
-  const cutoff6 = monthsAgoYMD(6);
-  const cutoff12 = monthsAgoYMD(12);
-  const cutoff24 = monthsAgoYMD(24);
-
   const radius: ExpressionSpecification = ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 6, 14, 10];
 
   const layerProps: Omit<CircleLayerSpecification, 'id' | 'filter' | 'paint'> = {
@@ -487,55 +482,44 @@ export function useLayers({
     {
       ...layerProps,
       id: `${id}-gt24`,
-      filter: [
-        'all',
-        ['has', 'scr5_obs_date'],
-        ['<', ['get', 'scr5_obs_date'], cutoff24],
-      ] as FilterSpecification,
-      paint: { ...paintProps, 'circle-color': '#FFC201' },
+      filter: ['>', ['get', 'months_diff'], 24] as FilterSpecification,
+      paint: { ...paintProps, 'circle-color': '#ffc201' },
     },
     {
       ...layerProps,
       id: `${id}-12-24`,
       filter: [
-        'all',
-        ['has', 'scr5_obs_date'],
-        ['>=', ['get', 'scr5_obs_date'], cutoff24],
-        ['<', ['get', 'scr5_obs_date'], cutoff12],
+        'match',
+        ['get', 'months_diff'],
+        [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+        true,
+        false,
       ] as FilterSpecification,
-      paint: { ...paintProps, 'circle-color': '#F78E1C' },
+      paint: { ...paintProps, 'circle-color': '#f78e1c' },
     },
     {
       ...layerProps,
       id: `${id}-6-12`,
       filter: [
-        'all',
-        ['has', 'scr5_obs_date'],
-        ['>=', ['get', 'scr5_obs_date'], cutoff12],
-        ['<', ['get', 'scr5_obs_date'], cutoff6],
+        'match',
+        ['get', 'months_diff'],
+        [7, 8, 9, 10, 11, 12],
+        true,
+        false,
       ] as FilterSpecification,
-      paint: { ...paintProps, 'circle-color': '#ED4F3F' },
+      paint: { ...paintProps, 'circle-color': '#ed4f3f' },
     },
     {
       ...layerProps,
       id: `${id}-3-6`,
-      filter: [
-        'all',
-        ['has', 'scr5_obs_date'],
-        ['>=', ['get', 'scr5_obs_date'], cutoff6],
-        ['<', ['get', 'scr5_obs_date'], cutoff3],
-      ] as FilterSpecification,
-      paint: { ...paintProps, 'circle-color': '#DC3982' },
+      filter: ['match', ['get', 'months_diff'], [3, 4, 5, 6], true, false] as FilterSpecification,
+      paint: { ...paintProps, 'circle-color': '#dc3982' },
     },
     {
       ...layerProps,
       id: `${id}-lt3`,
-      filter: [
-        'all',
-        ['has', 'scr5_obs_date'],
-        ['>=', ['get', 'scr5_obs_date'], cutoff3],
-      ] as FilterSpecification,
-      paint: { ...paintProps, 'circle-color': '#C62AD6' },
+      filter: ['match', ['get', 'months_diff'], [1, 2], true, false] as FilterSpecification,
+      paint: { ...paintProps, 'circle-color': '#c62ad6' },
     },
   ];
 }
