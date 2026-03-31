@@ -10,8 +10,7 @@ type LayoutMdxProps = {
 const LayoutMdx: React.FC<LayoutMdxProps> = (props: LayoutMdxProps) => {
   const { children, className } = props;
 
-  const decoded = decode(children as string);
-
+  const decoded = typeof children === 'string' ? decode(children) : children;
   return (
     <article
       className={cn(
